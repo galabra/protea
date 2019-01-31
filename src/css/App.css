@@ -1,0 +1,273 @@
+body {
+    text-align: center;
+}
+
+button {
+    cursor: pointer;
+    height: 25px;
+    border: 0;
+    background-color: #2196F3;
+    color: white;
+    outline: none;
+    font-size: 12px;
+}
+
+button:hover {
+    filter: brightness(1.1);
+}
+
+button:active {
+    filter: brightness(0.9);
+}
+
+textarea {
+    width: 100%;
+    height: 200px;
+    font-size: 17px;
+}
+
+
+#headline {
+    height: 12vh;
+    font-size: 30px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+#headline > div {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    height: 60%;
+    box-shadow: 0px 15px 50px -20px rgb(206, 206, 206);
+}
+
+#headline div div {
+    display: inline-block;
+    color: #57aff7;
+    letter-spacing: 0;
+}
+
+#headline div div:first-of-type {
+    margin-right: 12px;
+    font-weight: 600;
+    color: black;
+    letter-spacing: 1px;
+}
+
+#headline div div a {
+    text-decoration: none;
+    color: black;
+}
+
+#headline div div a p {
+    display: inline-block;
+    color: #d04353;
+}
+
+#headline div div a:hover {
+    color: rgb(81, 81, 81)
+}
+
+#columns {
+    display: flex;
+    flex-direction: row;
+}
+
+.column#col1 {
+    width: 18vw;
+    margin-left: 2vw;
+}
+
+.column#col2 {
+    width: 15vw;
+}
+
+.column#col3 {
+    width: 65vw;
+}
+
+#wrapper {
+    top: 0;
+    position: relative;
+    margin: auto;
+}
+
+.textWrapper {
+    margin: auto;
+    width: 600px;
+}
+
+.textWrapper:first-of-type {
+    margin-bottom: 30px;
+}
+
+.textWrapper .textWrapperHeader {
+    width: calc(100% + 6px);
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+}
+
+.textWrapper .textWrapperHeader div {
+    display: flex;
+    align-items: center;
+}
+
+.textareaButton {
+    margin-left: 4px;
+}
+
+.menu {
+    margin: auto;
+    width: 90%;
+    height: 70vh;
+}
+
+.menu .dictionaryTable {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 100%;
+    border: 1px solid #dfdfdf;
+    width: 150px;
+}
+
+.menuHeader {
+    user-select: none;
+    margin-bottom: 10px;
+}
+
+#editableDictionary {
+    overflow-y: hidden !important;
+    margin: auto;
+    width: 100%;
+    text-align: center;
+    height: calc(100% - 30px);
+}
+
+#editableDictionary textarea {
+    width: calc(100% - 5px);
+    height: calc(100% - 5px);
+}
+
+#dictionary button {
+    width: 70%;
+    margin-top: 10px;
+}
+
+#fixedDictionary, #dictionaryPickerTable {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
+#dictionaryPickerTable {
+    height: calc(100% - 25px);
+    width: 185px;
+    position: relative;
+}
+
+#addNewDictionaryButton {
+    width: 90%;
+}
+
+#fixedDictionary .fixedDictRow, #dictionaryPickerTable .fixedDictRow {
+    padding: 3px 0;
+    text-align: center;
+}
+
+#fixedDictionary .fixedDictRow:nth-of-type(2n-1), #dictionaryPickerTable .fixedDictRow:nth-of-type(2n-1) {
+    background-color: #f0f8ff;
+}
+
+#dictionaryPickerTable div {
+    user-select: none;
+    cursor: pointer;
+}
+
+#dictionaryPickerTable .fixedDictRow.checked {
+    background-color: #79c0ff;
+}
+
+#fixedDictionary .fixedDictRow div {
+    min-width: 30px;
+    width: auto;
+    display: inline-block;
+}
+
+.fixedDictRow.editable {
+    padding: 2px !important;
+}
+
+.fixedDictRow.editable input {
+    width: calc(100% - 1px);
+    height: 20px;
+    font-size: 16px;
+    outline: none;
+    padding: 0;
+    border: 0;
+    margin: 0;
+    text-align: center;
+}
+
+input[type="file"] {
+    visibility: hidden;
+    height: 0;
+    width: 0;
+}
+
+#targetText button {
+    padding: 8px;
+    height: auto;
+}
+
+.frame {
+    overflow-y: auto;
+    border: 1px solid black;
+    height: 3em;
+    width: 10em;
+    line-height: 1em;
+}
+
+textarea::-webkit-input-placeholder {
+    color: rgb(160, 160, 160);
+}
+
+textarea:-moz-placeholder { /* Firefox 18- */
+    color: rgb(160, 160, 160);
+}
+
+textarea::-moz-placeholder {  /* Firefox 19+ */
+    color: rgb(160, 160, 160);
+}
+
+textarea:-ms-input-placeholder {
+    color: rgb(160, 160, 160);
+}
+
+textarea::placeholder {
+    color: rgb(160, 160, 160);
+}
+
+
+.scrollable::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.scrollable::-webkit-scrollbar:vertical {
+    width: 11px;
+}
+
+.scrollable::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .5);
+}
