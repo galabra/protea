@@ -1,12 +1,20 @@
+:root {
+    --my-blue: #2196F3;
+}
+
 body {
     text-align: center;
+}
+
+* {
+    outline: none;
 }
 
 button {
     cursor: pointer;
     height: 25px;
     border: 0;
-    background-color: #2196F3;
+    background-color: var(--my-blue);
     color: white;
     outline: none;
     font-size: 12px;
@@ -28,8 +36,7 @@ textarea {
 
 
 #headline {
-    height: 12vh;
-    font-size: 30px;
+    height: 10vh;
     font-weight: 400;
     display: flex;
     align-items: center;
@@ -38,38 +45,48 @@ textarea {
 }
 
 #headline > div {
+    width: 30%;
+    /*box-shadow: 0px 15px 20px -20px rgb(206, 206, 206);*/
+}
+
+#headline > div > div {
     display: flex;
     align-items: center;
     align-content: center;
     justify-content: center;
-    height: 60%;
-    box-shadow: 0px 15px 50px -20px rgb(206, 206, 206);
+    height: 70%;
 }
 
-#headline div div {
+#headline div div div {
     display: inline-block;
-    color: #57aff7;
+    color: black;
     letter-spacing: 0;
+    font-weight: 300;
+    font-size: 20px;
+    letter-spacing: 1px;
 }
 
-#headline div div:first-of-type {
+#headline div div div:first-of-type {
+    font-size: 40px;
     margin-right: 12px;
     font-weight: 600;
     color: black;
     letter-spacing: 1px;
+    box-shadow: 0px 15px 40px -20px rgb(176, 176, 176);
 }
 
-#headline div div a {
+#headline div div div a {
     text-decoration: none;
     color: black;
 }
 
-#headline div div a p {
+#headline p {
     display: inline-block;
-    color: #d04353;
+    color: var(--my-blue);
+    margin: 0;
 }
 
-#headline div div a:hover {
+#headline div div div a:hover {
     color: rgb(81, 81, 81)
 }
 
@@ -144,14 +161,14 @@ textarea {
 #editableDictionary {
     overflow-y: hidden !important;
     margin: auto;
-    width: 100%;
+    width: 150px;
     text-align: center;
-    height: calc(100% - 30px);
+    height: 100%;
 }
 
 #editableDictionary textarea {
     width: calc(100% - 5px);
-    height: calc(100% - 5px);
+    height: calc(100% - 1px);
 }
 
 #dictionary button {
@@ -166,13 +183,14 @@ textarea {
 }
 
 #dictionaryPickerTable {
-    height: calc(100% - 25px);
+    height: calc(100% - 54px);
     width: 185px;
     position: relative;
 }
 
-#addNewDictionaryButton {
+#col1 .menu button {
     width: 90%;
+    margin-top: 2px;
 }
 
 #fixedDictionary .fixedDictRow, #dictionaryPickerTable .fixedDictRow {
@@ -182,6 +200,10 @@ textarea {
 
 #fixedDictionary .fixedDictRow:nth-of-type(2n-1), #dictionaryPickerTable .fixedDictRow:nth-of-type(2n-1) {
     background-color: #f0f8ff;
+}
+
+.fixedDictRow.invalid {
+    color: red;
 }
 
 #dictionaryPickerTable div {
@@ -211,7 +233,36 @@ textarea {
     padding: 0;
     border: 0;
     margin: 0;
-    text-align: center;
+    padding-left: 3px;
+}
+
+.fixedDictRow .pickerRowContent {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 5px;
+}
+
+.fixedDictRow .pickerRowContent button {
+    transform: translateX(50px);
+    transition: transform 0.2s;
+    color: red;
+    background-color: rgba(255, 255, 255, 0);
+    font-weight: 600;
+    padding: 0;
+    display: flex;
+    height: 100%;
+    padding-bottom: 1px;
+}
+
+.fixedDictRow .pickerRowContent button:hover {
+    filter: brightness(0.6);
+}
+
+.fixedDictRow:hover .pickerRowContent button {
+    transform: translateX(-5px);
+    width: 20px;
 }
 
 input[type="file"] {
@@ -270,4 +321,24 @@ textarea::placeholder {
     border-radius: 8px;
     border: 2px solid white; /* should match background, can't be transparent */
     background-color: rgba(0, 0, 0, .5);
+}
+
+#footer {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+    text-align: right;
+    width: 100%;
+    font-size: 13px;
+    background-color: white;
+}
+
+#footer a {
+    text-decoration: none;
+    color: black;
+}
+
+#footer a:hover {
+    color: var(--my-blue);
 }

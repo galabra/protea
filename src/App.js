@@ -7,15 +7,17 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        let dictionaryIndexFromLocalStorage = localStorage.getItem('currentDictionaryIndex');;
-        let dictionariesListFromLocalStorage = JSON.parse(localStorage.getItem('dictionaries'));
-        let dictionaryFromLocalStorage = dictionariesListFromLocalStorage && dictionariesListFromLocalStorage[dictionaryIndexFromLocalStorage];
+        let dictionaryIndex_LS = localStorage.getItem('currentDictionaryIndex');;
+        let dictionariesList_LS = JSON.parse(localStorage.getItem('dictionaries'));
+        let dictionary_LS = dictionariesList_LS && dictionariesList_LS[dictionaryIndex_LS];
+
         this.state = {
             text: '',
             translated: '',
-            dictionaryIndex: dictionaryIndexFromLocalStorage || 0,
-            dictionariesList: dictionariesListFromLocalStorage || [{name: 'Yidish'}, {name: 'Hebrew'}, {name: 'Arabic'}],
-            dictionary: dictionaryFromLocalStorage || [{original: 'a', target: '1'}, {original: 'b', target: '2'}, {original: 'c', target: '3'}]
+            exitEditModeCounter: 0,
+            dictionaryIndex: dictionaryIndex_LS || 0,
+            dictionariesList: dictionariesList_LS || [],
+            currentDictionary: dictionary_LS || null
         }
     }
 
@@ -39,65 +41,59 @@ class App extends Component {
     }
 
     translate = (original) => {
-        this.state.dictionary.map(replacement => {
-            let from = replacement.original;
-            let to   = replacement.target;
-            original = original.replace(new RegExp(from, 'g'), to);
-            return 0;
-        });
+        if (this.state.currentDictionary !== null) {
+            this.state.currentDictionary.content.map(replacement => {
+                let from = replacement.original;
+                let to   = replacement.target;
+                original = original.replace(new RegExp(from, 'g'), to);
+                return 0; // just to prevent compiler warning
+            });
+        }
         return original;
     }
 
-    updateDictionary = (newDict) => {
+    updateCurrentDictionary = (newDict) => {
+        let tmp_dictionariesList = this.state.dictionariesList;
+        tmp_dictionariesList[this.state.dictionaryIndex] = newDict;
+
         let self = this;
-        this.setState(
-            { dictionary: newDict },
+        this.setState({
+                currentDictionary: newDict,
+                dictionariesList: tmp_dictionariesList
+            },
             () => {
                 self.setState({
                     translated: self.translate(self.state.text)
                 });
-                localStorage.setItem('dictionary', JSON.stringify(newDict));
             }
         );
+        
+        if (localStorage.getItem('dictionaries') === null) {
+            localStorage.setItem('currentDictionaryIndex', this.state.dictionaryIndex);
+        }
+        localStorage.setItem('dictionary', JSON.stringify(newDict));
+        localStorage.setItem('dictionaries', JSON.stringify(tmp_dictionariesList));
     }
 
-    addNewDictionaryFromFile = (content) => {
-        let dictionariesNamesList = this.state.dictionariesList.reduce((acc, dict) => {
-            let tmp = acc;
-            tmp.push(dict.name);
-            return tmp;
-        }, []);
-        let newIndex = 1;
-        let keep = true;
+    addNewDictionary = (newDict) => {
+        let self = this;
+        let tmp_dictionariesList_LS = this.state.dictionariesList;
+        tmp_dictionariesList_LS.push(newDict);
 
-        while (keep) {
-            for (let i = 0; i < dictionariesNamesList.length; i ++) {
-                let index = dictionariesNamesList[i].match(/New Dictionary \((\d+)\)/);
-                if (index && index[1]*1 === newIndex) {
-                    newIndex ++;
-                    break;
-                }
-                else if (i === dictionariesNamesList.length - 1) {
-                    keep = false;
-                }
-            }
-        }
-
-        let newDictName = 'New Dictionary (' + newIndex + ')';
-        let newDict = {
-            name: newDictName,
-            content: content
-        }
-
-        let tmp = this.state.dictionariesList;
-        tmp.push(newDict);
-        
         this.setState({
-            dictionaryIndex: tmp.length - 1,
-            dictionariesList: tmp,
-            dictionary: content
+            exitEditModeCounter: this.state.exitEditModeCounter + 1,
+            currentDictionary: newDict,
+            dictionariesList: tmp_dictionariesList_LS,
+            dictionaryIndex: tmp_dictionariesList_LS.length - 1
+        }, () => {
+            self.setState({
+                translated: self.translate(self.state.text)
+            });
         });
-        alert(JSON.stringify(this.state.dictionariesList));
+
+        localStorage.setItem('dictionary', JSON.stringify(newDict));
+        localStorage.setItem('dictionaries', JSON.stringify(tmp_dictionariesList_LS));
+        localStorage.setItem('currentDictionaryIndex', tmp_dictionariesList_LS.length - 1);
     }
 
     copyTarget = () => {
@@ -138,10 +134,37 @@ class App extends Component {
         this.inputFileUpload.value = '';
     }
 
-    pickDictionary = i => {
+    pickDictionary = rowIndex => {
+        let nextDict = rowIndex === -1 ? null : this.state.dictionariesList[rowIndex];
+
         this.setState({
-            dictionaryIndex: i
-        })
+            exitEditModeCounter: this.state.exitEditModeCounter + 1,
+            currentDictionary: nextDict,
+            dictionaryIndex: rowIndex,
+        }, () => {
+            this.setState({
+                translated: this.translate(this.state.text),
+            })
+        });
+
+        localStorage.setItem('dictionary', rowIndex === -1 ? null : JSON.stringify(nextDict));
+        localStorage.setItem('currentDictionaryIndex', rowIndex);
+    }
+
+    removeRow = rowIndex => {
+        let tmp_dictionariesList_LS = JSON.parse(localStorage.getItem('dictionaries'));
+        tmp_dictionariesList_LS.splice(rowIndex, 1);
+        let newIndex = Math.min(tmp_dictionariesList_LS.length - 1, this.state.dictionaryIndex);
+
+        localStorage.setItem('dictionaries', JSON.stringify(tmp_dictionariesList_LS));
+
+        let newCurrentDictionary = newIndex === -1 ? null : tmp_dictionariesList_LS[newIndex];
+
+        this.setState({
+            dictionaryIndex: rowIndex,
+            dictionariesList: tmp_dictionariesList_LS,
+            currentDictionary: newCurrentDictionary,
+        }, () => this.pickDictionary(newIndex));
     }
 
     render() {
@@ -150,12 +173,14 @@ class App extends Component {
                 <div id="headline">
                     <div>
                         <div>
-                            <a href="https://en.wikipedia.org/wiki/Protea#Etymology" target="_blank" rel="noopener noreferrer">
-                                Pr<p>o</p>tea
-                            </a>
-                        </div>
-                        <div>
-                            t3xt conv3rt3r
+                            <div>
+                                <a href="https://en.wikipedia.org/wiki/Protea#Etymology" target="_blank" rel="noopener noreferrer">
+                                    Protea
+                                </a>
+                            </div>
+                            <div>
+                                t<p>3</p>xt conv<p>3</p>rt<p>3</p>r
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -165,13 +190,15 @@ class App extends Component {
                             dictionariesList={this.state.dictionariesList}
                             dictionaryIndex={this.state.dictionaryIndex}
                             pickDictionary={this.pickDictionary}
+                            addNewDictionary={this.addNewDictionary}
+                            removeRow={this.removeRow}
                         />
                     </div>
                     <div className="column" id="col2">
                         <Dictionary
-                            content={this.state.dictionary}
-                            update={this.updateDictionary}
-                            addNewDictionaryFromFile={this.addNewDictionaryFromFile}
+                            content={this.state.currentDictionary}
+                            update={this.updateCurrentDictionary}
+                            exitEditModeCounter={this.state.exitEditModeCounter}
                         />
                     </div>
                     <div className="column" id="col3">
@@ -206,9 +233,16 @@ class App extends Component {
                                 placeholder="Magically, the converted text will appear here"
                                 onChange={() => false}
                             ></textarea>
+                            
                             <input type="file" onChange={this.uploadNewInputFile} ref={(ref) => this.inputFileUpload = ref}/>
                         </div>
                     </div>
+                </div>
+                <div id="footer">
+                    <a href="http://www.galabra.co.il" target="_blank" rel="noopener noreferrer">
+                        Gal Abramovitz
+                    </a>
+                    , 2019
                 </div>
             </div>
         );

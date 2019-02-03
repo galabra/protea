@@ -11,17 +11,28 @@ class Dictionary extends Component {
         }
     }
 
+    componentWillReceiveProps(newProps) {
+        if (newProps.exitEditModeCounter !== this.props.exitEditModeCounter) {
+            this.setState({
+                editMode: false
+            })
+        }
+    }
+
     componentDidMount() {
-        let freshValue = this.props.content.reduce((acc, replacement) => {
-            return acc + replacement.original + '\t' + replacement.target + '\n'
-        }, '');
+        let freshValue = '';
+        if (this.props.content !== null) {
+            freshValue = this.props.content.content.reduce((acc, replacement) => {
+                return acc + replacement.original + '\t' + replacement.target + '\n'
+            }, '');
+        }
 
         this.setState({
             value: freshValue
         });
     }
 
-    handleDictionaryTextChange = (newVal, isNewDictFromFile) => {
+    handleTextChange = (newVal) => {
         let newDict = [];
         newVal = newVal.replace(new RegExp(/[ \t\r]+|,/, 'g'), '\t');
 
@@ -39,86 +50,87 @@ class Dictionary extends Component {
                 newDict.push(newRow);
             }
         }
-
-        /*
+        
         this.setState({
             value: newVal,
         });
-        this.props.update(newDict);
-        */
-
-        if (isNewDictFromFile) {
-            this.props.addNewDictionaryFromFile(newDict);
-        }
-    }
-
-    uploadNewCsv = (event) => {
-        let fileExtension = this.fileUpload.value;
-        fileExtension = fileExtension.substring(fileExtension.lastIndexOf('.'));
-        
-        let reader = new FileReader();
-        let self = this;
-        reader.onload = function () {
-            let csvContent = reader.result.replace('\xEF\xBB\xBF', '');
-            self.handleDictionaryTextChange(csvContent, true);
-        };
-        // start reading the file. When it is done, calls the onload event defined above.
-        
-        if (fileExtension.indexOf('csv') >= 0 || fileExtension.indexOf('txt') >= 0) {
-            reader.readAsText(this.fileUpload.files[0], 'ISO-8859-1');
-            this.fileUpload.value = '';
-            this.setState({
-                toggleEditCounter: this.state.toggleEditCounter + 1,
-            });
-        }
-        else {
-            alert('Sorry, currently only CSV and TXT files are supported');
-        }
+        let dictName = this.props.content.name;
+        this.props.update({name: dictName, content: newDict});
     }
 
     toggleEditMode = () => {
-        this.setState({
-            editMode: !this.state.editMode,
-        });
-    }
+        if (this.state.editMode) {
+            this.setState({
+                editMode: false,
+            });
+        }
+        else if (this.props.content !== null) {
+            let freshValue = this.props.content.content.reduce((acc, replacement) => {
+                return acc + replacement.original + '\t' + replacement.target + '\n'
+            }, '');
+            
+            let self = this;
 
-    handleUploadClick = () => {
-        this.fileUpload.click();
+            this.setState({
+                value: freshValue
+            }, () => {
+                self.setState({
+                    editMode: true,
+                });
+            });
+        }
     }
 
     render() {
-        const dictionaryTable = () => {
-            return <div className={`dictionaryTable ${this.props.content.length > 19 ? 'scrollable' : ''}`} id="fixedDictionary">
-                {
-                    this.props.content.map((replacement, i) => {
-                        let from = replacement.original;
-                        let to   = replacement.target;
-                        return  <div className="fixedDictRow" key={i}>
-                                    <div>{from}</div>
-                                    <div>&rarr;</div>
-                                    <div>{to}</div>
-                                </div>;
-                    })
-                }
-            </div>
+        const generateFixedDictionary = () => {
+            return this.props.content === null ?
+                <div className="dictionaryTable" id="fixedDictionary"></div> :
+                <div className={`dictionaryTable ${this.props.content.content.length > 19 ? 'scrollable' : ''}`} id="fixedDictionary">
+                    {
+                        this.props.content.content.map((replacement, i) => {
+                            let from = replacement.original;
+                            let to   = replacement.target;
+
+                            let isValid = true;
+                            for (let j = 0; j < i; j ++) {
+                                if (from.indexOf(this.props.content.content[j].original) !== -1) {
+                                    isValid = false;
+                                    break;
+                                }
+                            }
+
+                            return  <div
+                                        className={`fixedDictRow ${isValid ? '' : 'invalid'}`}
+                                        title={isValid ? '' : 'This expression is blocked by an earlier expression'}
+                                        aria-label={isValid ? '' : 'This expression is blocked by an earlier expression'}
+                                        key={i}
+                                    >
+                                        <div>{from}</div>
+                                        <div>&rarr;</div>
+                                        <div>{to}</div>
+                                    </div>;
+                        })
+                    }
+                </div>
         }
 
         return (
             <div className="menu" id="dictionary">
                 <div className="menuHeader">
-                    <Slider clickCounter={this.state.toggleEditCounter} onClick={this.toggleEditMode}/>&nbsp; Edit Dictionary
+                    <Slider
+                        isDisabled={this.props.content === null}
+                        clickCounter={this.state.toggleEditCounter}
+                        onClick={this.toggleEditMode}
+                    />
+                    &nbsp; Edit Dictionary
                 </div>
                 {
-                    this.state.editMode ? <div className="dictionaryTable" id="editableDictionary">
-                        <textarea className="scrollable" value={this.state.value} onChange={e => this.handleDictionaryTextChange(e.target.value, false)}>
+                    this.state.editMode ?
+                    <div className="dictionaryTable" id="editableDictionary">
+                        <textarea className="scrollable" value={this.state.value} onChange={e => this.handleTextChange(e.target.value)}>
                         </textarea>
-                        <input type="file" onChange={this.uploadNewCsv} ref={(ref) => this.fileUpload = ref}/>
-                    </div> : dictionaryTable()
-                }
-                {
-                    this.state.editMode && <button onClick={this.handleUploadClick} ref={(ref) => this.fileUploadButton = ref}>
-                            Upload Dictionary
-                        </button>
+                    </div>
+                    : generateFixedDictionary()
                 }
             </div>
         );

@@ -11,7 +11,7 @@ class Slider extends Component {
     render() {
         return (
             <label className="switch">
-                <input type="checkbox" onClick={this.props.onClick} ref={(ref) => this.button = ref}/>
+                <input type="checkbox" onClick={this.props.onClick} ref={(ref) => this.button = ref} disabled={this.props.isDisabled}/>
                 <span className="slider round"></span>
             </label>
         );
