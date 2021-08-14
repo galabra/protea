@@ -67,7 +67,7 @@ class App extends Component {
                 });
             }
         );
-        
+
         if (localStorage.getItem('dictionaries') === null) {
             localStorage.setItem('currentDictionaryIndex', this.state.dictionaryIndex);
         }
@@ -111,7 +111,7 @@ class App extends Component {
     uploadNewInputFile = (event) => {
         let fileExtension = this.inputFileUpload.value;
         fileExtension = fileExtension.substring(fileExtension.lastIndexOf('.'));
-        
+
         let reader = new FileReader();
         let self = this;
         reader.onload = function () {
@@ -124,7 +124,7 @@ class App extends Component {
             self.handleInputText(dummyEvent);
         };
         // start reading the file. When it is done, calls the onload event defined above.
-        
+
         if (fileExtension.indexOf('txt') >= 0) {
             reader.readAsText(this.inputFileUpload.files[0], 'ISO-8859-1');
         }
@@ -233,13 +233,13 @@ class App extends Component {
                                 placeholder="Magically, the converted text will appear here"
                                 onChange={() => false}
                             ></textarea>
-                            
+
                             <input type="file" onChange={this.uploadNewInputFile} ref={(ref) => this.inputFileUpload = ref}/>
                         </div>
                     </div>
                 </div>
                 <div id="footer">
-                    <a href="http://www.galabra.co.il" target="_blank" rel="noopener noreferrer">
+                    <a href="https://www.linkedin.com/in/galabra/" target="_blank" rel="noopener noreferrer">
                         Gal Abramovitz
                     </a>
                     , 2019
