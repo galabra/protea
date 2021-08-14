@@ -50,7 +50,7 @@ class Dictionary extends Component {
                 newDict.push(newRow);
             }
         }
-        
+
         this.setState({
             value: newVal,
         });
@@ -68,7 +68,7 @@ class Dictionary extends Component {
             let freshValue = this.props.content.content.reduce((acc, replacement) => {
                 return acc + replacement.original + '\t' + replacement.target + '\n'
             }, '');
-            
+
             let self = this;
 
             this.setState({
@@ -84,7 +84,7 @@ class Dictionary extends Component {
     render() {
         const generateFixedDictionary = () => {
             return this.props.content === null ?
-                <div className="dictionaryTable" id="fixedDictionary"></div> :
+                <div className="dictionaryTable" id="fixedDictionary" /> :
                 <div className={`dictionaryTable ${this.props.content.content.length > 19 ? 'scrollable' : ''}`} id="fixedDictionary">
                     {
                         this.props.content.content.map((replacement, i) => {

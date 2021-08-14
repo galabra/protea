@@ -1,6 +1,10 @@
-const SpecialTokens = {
-    END_OF_WORD: '#',
-    EMPTY_STRING: '_',
+import { SpecialTokens, TextDirection } from "./constants";
+
+export function getTextDirection(text) {
+    const hebrewRegex = /[\u0590-\u05FF]/;
+    const arabicRegex = /[\u0600-\u06FF]/;
+    return [hebrewRegex, arabicRegex].some((semiticLanguage) => semiticLanguage.test(text))
+        ? TextDirection.RTL : TextDirection.LTR;
 }
 
 export function translateByDictionary(originalText, dictionary) {

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import Dictionary from './Dictionary.jsx';
 import DictionaryPicker from './DictionaryPicker.jsx';
-import { translateByDictionary } from "./logic";
+
+import { getTextDirection, translateByDictionary } from "./logic";
+import { TextDirection } from "./constants";
 
 import './css/App.css';
 
@@ -19,7 +21,8 @@ class App extends Component {
             exitEditModeCounter: 0,
             dictionaryIndex: dictionaryIndex_LS || 0,
             dictionariesList: dictionariesList_LS || [],
-            currentDictionary: dictionary_LS || null
+            currentDictionary: dictionary_LS || null,
+            textDirection: TextDirection.LTR,
         }
     }
 
@@ -39,6 +42,7 @@ class App extends Component {
         this.setState({
             text: val,
             translated: new_val,
+            textDirection: getTextDirection(val),
         });
     }
 
@@ -209,6 +213,7 @@ class App extends Component {
                                 value={this.state.text}
                                 onChange={this.handleInputText}
                                 placeholder="Please insert text here"
+                                dir={this.state.textDirection}
                             />
                         </div>
                         <div className="textWrapper" id="targetText">
@@ -224,6 +229,7 @@ class App extends Component {
                                 ref={(ref) => this.targetTextElement = ref}
                                 placeholder="Magically, the converted text will appear here"
                                 onChange={() => false}
+                                dir={this.state.textDirection}
                             />
 
                             <input type="file" onChange={this.uploadNewInputFile} ref={(ref) => this.inputFileUpload = ref}/>
