@@ -1,4 +1,4 @@
-![Protea](https://github.com/galabra/protea/blob/master/protea.jpeg?raw=true)
+![Protea](./public/protea.jpeg)
 
 This app transcribes texts into a different set of letters.
 The transcription is dynamically determined by the sets of manually-created dictionaries.
