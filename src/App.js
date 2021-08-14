@@ -9,7 +9,7 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        let dictionaryIndex_LS = localStorage.getItem('currentDictionaryIndex');;
+        let dictionaryIndex_LS = localStorage.getItem('currentDictionaryIndex');
         let dictionariesList_LS = JSON.parse(localStorage.getItem('dictionaries'));
         let dictionary_LS = dictionariesList_LS && dictionariesList_LS[dictionaryIndex_LS];
 
