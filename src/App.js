@@ -3,7 +3,7 @@ import Dictionary from './Dictionary.jsx';
 import DictionaryPicker from './DictionaryPicker.jsx';
 
 import { getTextDirection, translateByDictionary } from "./logic";
-import { TextDirection } from "./constants";
+import { TextDirection, TextPlaceholders } from "./constants";
 
 import './css/App.css';
 
@@ -89,7 +89,7 @@ class App extends Component {
 
         localStorage.setItem('dictionary', JSON.stringify(newDict));
         localStorage.setItem('dictionaries', JSON.stringify(tmp_dictionariesList_LS));
-        localStorage.setItem('currentDictionaryIndex', tmp_dictionariesList_LS.length - 1);
+        localStorage.setItem('currentDictionaryIndex', (tmp_dictionariesList_LS.length - 1).toString());
     }
 
     copyTarget = () => {
@@ -104,7 +104,7 @@ class App extends Component {
         this.inputFileUpload.click();
     }
 
-    uploadNewInputFile = (event) => {
+    uploadNewInputFile = () => {
         let fileExtension = this.inputFileUpload.value;
         fileExtension = fileExtension.substring(fileExtension.lastIndexOf('.'));
 
@@ -212,7 +212,7 @@ class App extends Component {
                                 className="mainTextarea"
                                 value={this.state.text}
                                 onChange={this.handleInputText}
-                                placeholder="Please insert text here"
+                                placeholder={TextPlaceholders.SOURCE}
                                 dir={this.state.textDirection}
                             />
                         </div>
@@ -227,7 +227,7 @@ class App extends Component {
                                 className="mainTextarea"
                                 value={this.state.translated}
                                 ref={(ref) => this.targetTextElement = ref}
-                                placeholder="Magically, the converted text will appear here"
+                                placeholder={TextPlaceholders.TARGET}
                                 onChange={() => false}
                                 dir={this.state.textDirection}
                             />
