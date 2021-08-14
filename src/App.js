@@ -23,6 +23,7 @@ class App extends Component {
             dictionariesList: dictionariesList_LS || [],
             currentDictionary: dictionary_LS || null,
             textDirection: TextDirection.LTR,
+            ignoreCase: true,
         }
     }
 
@@ -46,7 +47,7 @@ class App extends Component {
         });
     }
 
-    translate = (original) => translateByDictionary(original, this.state.currentDictionary);
+    translate = (original) => translateByDictionary(original, this.state.currentDictionary, this.state.ignoreCase);
 
     updateCurrentDictionary = (newDict) => {
         let tmp_dictionariesList = this.state.dictionariesList;
@@ -163,6 +164,16 @@ class App extends Component {
         }, () => this.pickDictionary(newIndex));
     }
 
+    handleIgnoreCaseClick = (event) => {
+        this.setState({
+            ignoreCase: event.target.checked,
+        }, () => {
+            this.setState({
+                translated: this.translate(this.state.text),
+            });
+        })
+    }
+
     render() {
         return (
             <div id="wrapper">
@@ -204,6 +215,10 @@ class App extends Component {
                                     Source Text
                                 </div>
                                 <div>
+                                    <label id="ignoreCaseWrapper">
+                                        <input type="checkbox" checked={this.state.ignoreCase} onChange={this.handleIgnoreCaseClick} />
+                                        Ignore case
+                                    </label>
                                     <button className="textareaButton" onClick={this.handleUploadClick}>Upload</button>
                                     <button className="textareaButton" onClick={this.clearInputText}>Clear</button>
                                 </div>

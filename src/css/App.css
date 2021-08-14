@@ -135,6 +135,12 @@ textarea {
     align-items: center;
 }
 
+.textWrapper .textWrapperHeader #ignoreCaseWrapper {
+    cursor: pointer;
+    user-select: none;
+    margin-right: 10px;
+}
+
 .textareaButton {
     margin-left: 4px;
 }
