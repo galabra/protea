@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Dictionary from './Dictionary.jsx';
 import DictionaryPicker from './DictionaryPicker.jsx';
+import { translateByDictionary } from "./logic";
+
 import './css/App.css';
 
 class App extends Component {
@@ -40,17 +42,7 @@ class App extends Component {
         });
     }
 
-    translate = (original) => {
-        if (this.state.currentDictionary !== null) {
-            this.state.currentDictionary.content.map(replacement => {
-                let from = replacement.original;
-                let to   = replacement.target;
-                original = original.replace(new RegExp(from, 'g'), to);
-                return 0; // just to prevent compiler warning
-            });
-        }
-        return original;
-    }
+    translate = (original) => translateByDictionary(original, this.state.currentDictionary);
 
     updateCurrentDictionary = (newDict) => {
         let tmp_dictionariesList = this.state.dictionariesList;
@@ -217,7 +209,7 @@ class App extends Component {
                                 value={this.state.text}
                                 onChange={this.handleInputText}
                                 placeholder="Please insert text here"
-                            ></textarea>
+                            />
                         </div>
                         <div className="textWrapper" id="targetText">
                             <div className="textWrapperHeader">
@@ -232,7 +224,7 @@ class App extends Component {
                                 ref={(ref) => this.targetTextElement = ref}
                                 placeholder="Magically, the converted text will appear here"
                                 onChange={() => false}
-                            ></textarea>
+                            />
 
                             <input type="file" onChange={this.uploadNewInputFile} ref={(ref) => this.inputFileUpload = ref}/>
                         </div>
