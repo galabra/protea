@@ -8,9 +8,7 @@ export function getTextDirection(text) {
 }
 
 export function translateByDictionary(originalText, dictionary, ignoreCase) {
-    if (dictionary === null) {
-        return originalText;
-    }
+    if (dictionary === null) return originalText;
 
     const regexFlags = ignoreCase ? 'gi' : 'g';
     return dictionary.content.reduce((ans, replacement) => {
@@ -18,7 +16,7 @@ export function translateByDictionary(originalText, dictionary, ignoreCase) {
 
         if (original.endsWith(SpecialTokens.END_OF_WORD)) {
             const originalWithoutSpecialCharacter = original.slice(0, -1);
-            return ans.replace(new RegExp(`${originalWithoutSpecialCharacter}( |$|\n)`, regexFlags), `${target}$1`);
+            return ans.replace(new RegExp(`${originalWithoutSpecialCharacter}([ \n,.!?:;]|$)`, regexFlags), `${target}$1`);
         } else if (target === SpecialTokens.EMPTY_STRING) {
             return ans.replace(new RegExp(original, regexFlags), '');
         }
